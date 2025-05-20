@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,28 +36,33 @@ namespace SzotanitoJatek
 
         private void BetoltSzotar()
         {
-            try
+            OpenFileDialog ofd = new OpenFileDialog
             {
-                string fajl = Path.Combine(Application.StartupPath, "szotar.txt");
-                if (!File.Exists(fajl))
-                {
-                    MessageBox.Show("A szotar.txt fájl nem található.");
-                    return;
-                }
+                Title = "Szótárfájl kiválasztása",
+                Filter = "Szótár fájl (*.txt)|*.txt|Minden fájl (*.*)|*.*"
+            };
 
-                szoparok.Clear();
-                foreach (var sor in File.ReadAllLines(fajl))
-                {
-                    var parts = sor.Split(';');
-                    if (parts.Length == 2)
-                        szoparok.Add((parts[0].Trim(), parts[1].Trim()));
-                }
-            }
-            catch (Exception ex)
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Hiba a fájl betöltésekor: " + ex.Message);
+                try
+                {
+                    szoparok.Clear();
+                    foreach (var sor in File.ReadAllLines(ofd.FileName))
+                    {
+                        var parts = sor.Split(';');
+                        if (parts.Length == 2)
+                        {
+                            szoparok.Add((parts[0].Trim(), parts[1].Trim()));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hiba a fájl betöltésekor: " + ex.Message, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
+
 
 
         private void KirakSzavakat()
